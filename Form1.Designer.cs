@@ -33,29 +33,30 @@
             this.BuildButton = new MetroFramework.Controls.MetroButton();
             this.KeyTextbox = new MetroFramework.Controls.MetroTextBox();
             this.openFile = new System.Windows.Forms.OpenFileDialog();
+            this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.SuspendLayout();
             // 
             // FilePathTextbox
             // 
             this.FilePathTextbox.AllowDrop = true;
-            this.FilePathTextbox.Location = new System.Drawing.Point(24, 85);
+            this.FilePathTextbox.Location = new System.Drawing.Point(23, 82);
             this.FilePathTextbox.Name = "FilePathTextbox";
             this.FilePathTextbox.ReadOnly = true;
-            this.FilePathTextbox.Size = new System.Drawing.Size(353, 23);
+            this.FilePathTextbox.Size = new System.Drawing.Size(354, 23);
             this.FilePathTextbox.TabIndex = 0;
             // 
             // FileSelectButton
             // 
-            this.FileSelectButton.Location = new System.Drawing.Point(383, 85);
+            this.FileSelectButton.Location = new System.Drawing.Point(383, 82);
             this.FileSelectButton.Name = "FileSelectButton";
-            this.FileSelectButton.Size = new System.Drawing.Size(75, 23);
+            this.FileSelectButton.Size = new System.Drawing.Size(76, 23);
             this.FileSelectButton.TabIndex = 1;
             this.FileSelectButton.Text = "파일 선택";
             this.FileSelectButton.Click += new System.EventHandler(this.FileSelectButton_Click);
             // 
             // BuildButton
             // 
-            this.BuildButton.Location = new System.Drawing.Point(23, 143);
+            this.BuildButton.Location = new System.Drawing.Point(24, 176);
             this.BuildButton.Name = "BuildButton";
             this.BuildButton.Size = new System.Drawing.Size(434, 36);
             this.BuildButton.TabIndex = 2;
@@ -64,9 +65,9 @@
             // 
             // KeyTextbox
             // 
-            this.KeyTextbox.Location = new System.Drawing.Point(24, 114);
+            this.KeyTextbox.Location = new System.Drawing.Point(24, 111);
             this.KeyTextbox.Name = "KeyTextbox";
-            this.KeyTextbox.Size = new System.Drawing.Size(434, 23);
+            this.KeyTextbox.Size = new System.Drawing.Size(435, 23);
             this.KeyTextbox.TabIndex = 3;
             this.KeyTextbox.Text = "This_Is_Key";
             // 
@@ -76,12 +77,21 @@
             this.openFile.FileName = "TargetFile";
             this.openFile.Filter = "실행파일|*.exe";
             // 
+            // metroButton1
+            // 
+            this.metroButton1.Location = new System.Drawing.Point(24, 140);
+            this.metroButton1.Name = "metroButton1";
+            this.metroButton1.Size = new System.Drawing.Size(215, 30);
+            this.metroButton1.TabIndex = 5;
+            this.metroButton1.Text = "ICON";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(481, 202);
+            this.ClientSize = new System.Drawing.Size(481, 228);
+            this.Controls.Add(this.metroButton1);
             this.Controls.Add(this.KeyTextbox);
             this.Controls.Add(this.BuildButton);
             this.Controls.Add(this.FileSelectButton);
@@ -101,6 +111,7 @@
         private MetroFramework.Controls.MetroButton BuildButton;
         private MetroFramework.Controls.MetroTextBox KeyTextbox;
         private System.Windows.Forms.OpenFileDialog openFile;
+        private MetroFramework.Controls.MetroButton metroButton1;
     }
 }
 
